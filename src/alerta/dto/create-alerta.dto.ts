@@ -5,6 +5,6 @@ export class CreateAlertaDto {
   longitude: number;
   dataEncontro: Date;
   especie: EspecieEnum;
-  Observacao?: string;
+  observacao?: string;
   urlImagemRegistro: string;
 }

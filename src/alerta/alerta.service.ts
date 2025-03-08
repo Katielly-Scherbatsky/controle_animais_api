@@ -1,22 +1,25 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateAlertaDto } from './dto/create-alerta.dto';
-import { UpdateAlertaDto } from './dto/update-alerta.dto';
-import { PrismaService } from 'src/prisma.service';
-import { StatusEnum } from './enums/status.enum';
-import { CreateDenunciaDto } from './dto/create-denuncia-alerta.dto';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { CreateAlertaDto } from "./dto/create-alerta.dto";
+import { UpdateAlertaDto } from "./dto/update-alerta.dto";
+import { PrismaService } from "src/prisma.service";
+import { StatusEnum } from "./enums/status.enum";
+import { CreateDenunciaDto } from "./dto/create-denuncia-alerta.dto";
 
 @Injectable()
 export class AlertaService {
-
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   criar(usuarioId: number, dto: CreateAlertaDto) {
     return this.prisma.alerta.create({
       data: {
         ...dto,
         usuarioId,
-        status: StatusEnum.Avistado
-      }
+        status: StatusEnum.Avistado,
+      },
     });
   }
 
@@ -27,8 +30,8 @@ export class AlertaService {
   buscar(id: number) {
     return this.prisma.alerta.findFirst({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 
@@ -36,7 +39,7 @@ export class AlertaService {
     const alerta = await this.prisma.alerta.findFirst({
       where: {
         id,
-      }
+      },
     });
 
     if (!alerta) {
@@ -49,13 +52,13 @@ export class AlertaService {
 
     return this.prisma.alerta.update({
       data: {
-        ...dto
+        ...dto,
       },
       where: {
         id,
         AND: {
-          usuarioId
-        }
+          usuarioId,
+        },
       },
     });
   }
@@ -64,7 +67,7 @@ export class AlertaService {
     const alerta = await this.prisma.alerta.findFirst({
       where: {
         id,
-      }
+      },
     });
 
     if (!alerta) {
@@ -73,13 +76,13 @@ export class AlertaService {
 
     return this.prisma.alerta.update({
       data: {
-        status
+        status,
       },
       where: {
         id,
         AND: {
-          usuarioId
-        }
+          usuarioId,
+        },
       },
     });
   }
@@ -88,7 +91,7 @@ export class AlertaService {
     const alerta = await this.prisma.alerta.findFirst({
       where: {
         id,
-      }
+      },
     });
 
     if (!alerta) {
@@ -103,17 +106,21 @@ export class AlertaService {
       where: {
         id,
         AND: {
-          usuarioId
-        }
-      }
+          usuarioId,
+        },
+      },
     });
   }
 
-  async denunciarAlerta(usuarioId: number, alertaId: number, dto: CreateDenunciaDto) {
+  async denunciarAlerta(
+    usuarioId: number,
+    alertaId: number,
+    dto: CreateDenunciaDto
+  ) {
     const alerta = await this.prisma.alerta.findFirst({
       where: {
         id: alertaId,
-      }
+      },
     });
 
     if (!alerta) {
@@ -125,7 +132,15 @@ export class AlertaService {
         ...dto,
         usuarioId,
         alertaId,
-      }
+      },
+    });
+  }
+
+  async buscarAvisosDoUsuario(usuarioId: number) {
+    return this.prisma.alerta.findMany({
+      where: {
+        usuarioId,
+      },
     });
   }
 }
